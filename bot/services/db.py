@@ -1,11 +1,17 @@
 import os
 import psycopg2
 
-DB_NAME = os.getenv("DB_NAME", "shopdb")
-DB_USER = os.getenv("DB_USER", "shopuser")
-DB_PASS = os.getenv("DB_PASS", "supersecret")
-DB_HOST = os.getenv("DB_HOST", "db")
-DB_PORT = os.getenv("DB_PORT", "5432")
+def get_env_var(name):
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"Environment variable '{name}' is not set or empty.")
+    return value
+
+DB_NAME = get_env_var("DB_NAME")
+DB_USER = get_env_var("DB_USER")
+DB_PASS = get_env_var("DB_PASS")
+DB_HOST = get_env_var("DB_HOST")
+DB_PORT = get_env_var("DB_PORT")
 
 def get_connection():
     return psycopg2.connect(
