@@ -1,10 +1,9 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:15
-    container_name: shopbot_db
     restart: unless-stopped
+    env_file:
+      - ./.env     # اشاره به فایل .env در همین پوشه
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
@@ -16,17 +15,17 @@ services:
 
   bot:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    container_name: shopbot_app
-    restart: unless-stopped
-    env_file:
-      - ../.env
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
+    command: python bot/main.py
+    env_file:
+      - ./.env     # اگر ربات هم به متغیرهای .env نیاز دارد
+    volumes:
+      - ../:/app
     networks:
       - botnet
-    command: python bot/main.py
 
 networks:
   botnet:
